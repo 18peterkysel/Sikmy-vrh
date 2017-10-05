@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.xkysel.myapplication.AdapterScreen.TableActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarTable"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <RelativeLayout
+        android:id="@+id/info_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbarTable"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/TW_total_distance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_distance_title"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/TW_total_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="TOTAL DISTANCE"/>
+        <TextView
+            android:id="@+id/TW_total_height_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_height_title"
+            android:layout_below="@+id/TW_total_distance_title"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/TW_total_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/TW_total_distance"
+            android:text="TOTAL HEIGHT"/>
+        <TextView
+            android:id="@+id/TW_total_time_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_time_title"
+            android:layout_below="@+id/TW_total_height_title"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/TW_total_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/TW_total_height"
+            android:text="TOTAL TIME" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@id/info_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ListView
+            android:id="@+id/items_listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ListView>
+    </LinearLayout>
+
+</RelativeLayout>

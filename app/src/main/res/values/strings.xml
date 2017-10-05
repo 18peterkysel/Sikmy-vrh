@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Sikmy vrh</string>
+    <string name="title">Aplikacia sikmy vrh</string>
+    <string name="hint_angle">Angle</string>
+    <string name="hint_speed">Speed</string>
+    <string name="button_text">Start</string>
+    <string name="title_activity_table">TableActivity</string>
+    <string name="time_title">Time: </string>
+    <string name="distance_title">Distance: </string>
+    <string name="height_title">Height: </string>
+    <string name="total_height_title">Total height: </string>
+    <string name="total_distance_title">Total distance: </string>
+    <string name="total_time_title">Total time: </string>
+    <string name="menu_title_table">Tabulka</string>
+    <string name="menu_title_chart">Graf</string>
+    <string name="menu_title_anim">Animacia</string>
+    <string name="menu_title_info">Info</string>
+</resources>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/TW_time_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/time_title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/TW_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentEnd="true"
+            android:text="2 s" />
+
+        <TextView
+            android:id="@+id/TW_distance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/TW_time_title"
+            android:layout_marginStart="10dp"
+            android:text="@string/distance_title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/TW_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/TW_time"
+            android:layout_marginStart="5dp"
+            android:layout_alignParentEnd="true"
+            android:text="1 m" />
+
+        <TextView
+            android:id="@+id/TW_height_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/TW_distance_title"
+            android:layout_marginStart="10dp"
+            android:text="@string/height_title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/TW_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/TW_distance"
+            android:layout_marginStart="5dp"
+            android:layout_alignParentEnd="true"
+            android:text="1 m" />
+    </RelativeLayout>
+</LinearLayout>
