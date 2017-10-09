@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.xkysel.myapplication.Animacia.AnimationActivity;
 import com.example.xkysel.myapplication.GraphScreen.GraphActivity;
 import com.example.xkysel.myapplication.R;
 import com.example.xkysel.myapplication.TrajectoryProjectile;
@@ -57,6 +58,7 @@ public class TableActivity extends AppCompatActivity {
                 startGraphActivity();
                 break;
             case R.id.nav_anim:
+                startAnimationActivity();
                 break;
             case R.id.nav_info:
                 break;
@@ -74,17 +76,12 @@ public class TableActivity extends AppCompatActivity {
 
     private ArrayList<ItemOfAdapter> returnItems(){
         ArrayList<ItemOfAdapter> items = new ArrayList<>();
-        double timeOfFlight = _projectile.get_timeOfFlight();
-        double increaseTime = timeOfFlight / 100;
+        ArrayList<Double> axisX = _projectile.get_Xaxis();
+        ArrayList<Double> axisY = _projectile.get_Yaxis();
+        ArrayList<Double> timeArray = _projectile.get_listOfTimes();
 
-        for (double time = 0; time <= timeOfFlight; time += increaseTime) {
-            if (time + increaseTime > timeOfFlight) {
-                time = timeOfFlight;
-            }
-            double distance = _projectile.get_xInTime(time);
-            double height = _projectile.get_yInTime(time);
-
-            items.add(new ItemOfAdapter(time, distance, height));
+        for (int i = 0; i < axisX.size(); i++) {
+            items.add(new ItemOfAdapter(timeArray.get(i), axisX.get(i), axisY.get(i)));
         }
 
         return items;
@@ -103,6 +100,13 @@ public class TableActivity extends AppCompatActivity {
 
     private void startGraphActivity() {
         Intent intent = new Intent(this, GraphActivity.class);
+
+        intent.putExtra("Projectile", _projectile);
+        startActivity(intent);
+    }
+
+    private void startAnimationActivity() {
+        Intent intent = new Intent(this, AnimationActivity.class);
 
         intent.putExtra("Projectile", _projectile);
         startActivity(intent);

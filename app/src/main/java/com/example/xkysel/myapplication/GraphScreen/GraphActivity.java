@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.xkysel.myapplication.AdapterScreen.TableActivity;
+import com.example.xkysel.myapplication.Animacia.AnimationActivity;
 import com.example.xkysel.myapplication.R;
 import com.example.xkysel.myapplication.TrajectoryProjectile;
 import com.jjoe64.graphview.GraphView;
@@ -16,11 +17,11 @@ import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.ArrayList;
+
 public class GraphActivity extends AppCompatActivity {
     private LineGraphSeries<DataPoint> _series;
     private TrajectoryProjectile _projectile;
-    private double _distanceOfTraveled;
-    private double _highestHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +41,8 @@ public class GraphActivity extends AppCompatActivity {
 
         _projectile = (TrajectoryProjectile) getIntent().getSerializableExtra("Projectile");
 
-        _distanceOfTraveled = _projectile.get_distanceTraveled();
-        _highestHeight = _projectile.get_highestHeight();
+        double distanceOfTraveled = _projectile.get_distanceTraveled();
+        double highestHeight = _projectile.get_highestHeight();
 
         Viewport viewport = graph.getViewport();
 
@@ -49,14 +50,14 @@ public class GraphActivity extends AppCompatActivity {
         viewport.setYAxisBoundsManual(true);
 
         viewport.setMinY(0);
-        viewport.setMaxY(_highestHeight + 1);
+        viewport.setMaxY(highestHeight + 1);
 
-        if (_distanceOfTraveled >= 0) {
-            viewport.setMinX(-_distanceOfTraveled);
-            viewport.setMaxX(_distanceOfTraveled);
+        if (distanceOfTraveled >= 0) {
+            viewport.setMinX(-distanceOfTraveled);
+            viewport.setMaxX(distanceOfTraveled);
         } else {
-            viewport.setMinX(_distanceOfTraveled);
-            viewport.setMaxX(-_distanceOfTraveled);
+            viewport.setMinX(distanceOfTraveled);
+            viewport.setMaxX(-distanceOfTraveled);
         }
     }
 
@@ -68,29 +69,14 @@ public class GraphActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                double timeOfFlight = _projectile.get_timeOfFlight();
-                double increaseTime = timeOfFlight / 100;
+                ArrayList<Double> axisX = _projectile.get_Xaxis();
+                ArrayList<Double> axisY = _projectile.get_Yaxis();
 
-                if (_distanceOfTraveled >= 0) {
-                    for (double time = 0; time <= timeOfFlight; time += increaseTime) {
-                        if (time + increaseTime > timeOfFlight) {
-                            time = timeOfFlight;
-                        }
-                        double x = _projectile.get_xInTime(time);
-                        double y = _projectile.get_yInTime(time);
+                for (int i = 0; i < axisX.size(); i++) {
+                    double x = axisX.get(i);
+                    double y = axisY.get(i);
 
-                        _series.appendData(new DataPoint(x, y), false,  100);
-                    }
-                } else {
-                    for (double time = timeOfFlight; time >= 0; time -= increaseTime) {
-                        if (time - increaseTime < 0) {
-                            time = 0;
-                        }
-                        double x = _projectile.get_xInTime(time);
-                        double y = _projectile.get_yInTime(time);
-
-                        _series.appendData(new DataPoint(x, y), false,  100);
-                    }
+                    _series.appendData(new DataPoint(x, y), false,  100);
                 }
             }
         }).start();
@@ -103,6 +89,7 @@ public class GraphActivity extends AppCompatActivity {
                 startTableActivity();
                 break;
             case R.id.nav_anim:
+                startAnimationActivity();
                 break;
             case R.id.nav_info:
                 break;
@@ -120,6 +107,13 @@ public class GraphActivity extends AppCompatActivity {
 
     private void startTableActivity() {
         Intent intent = new Intent(this, TableActivity.class);
+
+        intent.putExtra("Projectile", _projectile);
+        startActivity(intent);
+    }
+
+    private void startAnimationActivity() {
+        Intent intent = new Intent(this, AnimationActivity.class);
 
         intent.putExtra("Projectile", _projectile);
         startActivity(intent);

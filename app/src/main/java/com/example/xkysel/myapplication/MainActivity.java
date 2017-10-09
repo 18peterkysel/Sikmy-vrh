@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
             TrajectoryProjectile projectile = new TrajectoryProjectile(angle, speed);
             projectile.calculateDistanceTraveled();
             projectile.calculateTimeOfFlight();
+            projectile.calculate_X_Y_axis();
 
             intent.putExtra("Projectile", projectile);
             startActivity(intent);
