@@ -19,6 +19,8 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 public class GraphActivity extends AppCompatActivity {
     private LineGraphSeries<DataPoint> _series;
     private TrajectoryProjectile _projectile;
+    private double _distanceOfTraveled;
+    private double _highestHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +40,8 @@ public class GraphActivity extends AppCompatActivity {
 
         _projectile = (TrajectoryProjectile) getIntent().getSerializableExtra("Projectile");
 
-        double distanceOfTraveled = _projectile.get_distanceTraveled();
-        double highestHeight = _projectile.get_highestHeight();
+        _distanceOfTraveled = _projectile.get_distanceTraveled();
+        _highestHeight = _projectile.get_highestHeight();
 
         Viewport viewport = graph.getViewport();
 
@@ -47,10 +49,15 @@ public class GraphActivity extends AppCompatActivity {
         viewport.setYAxisBoundsManual(true);
 
         viewport.setMinY(0);
-        viewport.setMaxY(highestHeight + 1);
+        viewport.setMaxY(_highestHeight + 1);
 
-        viewport.setMinX(0);
-        viewport.setMaxX(distanceOfTraveled);
+        if (_distanceOfTraveled >= 0) {
+            viewport.setMinX(-_distanceOfTraveled);
+            viewport.setMaxX(_distanceOfTraveled);
+        } else {
+            viewport.setMinX(_distanceOfTraveled);
+            viewport.setMaxX(-_distanceOfTraveled);
+        }
     }
 
     @Override
@@ -64,14 +71,26 @@ public class GraphActivity extends AppCompatActivity {
                 double timeOfFlight = _projectile.get_timeOfFlight();
                 double increaseTime = timeOfFlight / 100;
 
-                for (double time = 0; time <= timeOfFlight; time += increaseTime) {
-                    if (time + increaseTime > timeOfFlight) {
-                        time = timeOfFlight;
-                    }
-                    double x = _projectile.get_xInTime(time);
-                    double y = _projectile.get_yInTime(time);
+                if (_distanceOfTraveled >= 0) {
+                    for (double time = 0; time <= timeOfFlight; time += increaseTime) {
+                        if (time + increaseTime > timeOfFlight) {
+                            time = timeOfFlight;
+                        }
+                        double x = _projectile.get_xInTime(time);
+                        double y = _projectile.get_yInTime(time);
 
-                    _series.appendData(new DataPoint(x, y), false,  100);
+                        _series.appendData(new DataPoint(x, y), false,  100);
+                    }
+                } else {
+                    for (double time = timeOfFlight; time >= 0; time -= increaseTime) {
+                        if (time - increaseTime < 0) {
+                            time = 0;
+                        }
+                        double x = _projectile.get_xInTime(time);
+                        double y = _projectile.get_yInTime(time);
+
+                        _series.appendData(new DataPoint(x, y), false,  100);
+                    }
                 }
             }
         }).start();

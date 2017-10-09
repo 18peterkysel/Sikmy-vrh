@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.xkysel.myapplication.AdapterScreen.TableActivity;
 
@@ -35,11 +36,15 @@ public class MainActivity extends AppCompatActivity {
         int angle = Integer.valueOf(_angle_editText.getText().toString());
         int speed = Integer.valueOf(_speed_editText.getText().toString());
 
-        TrajectoryProjectile projectile = new TrajectoryProjectile(angle, speed);
-        projectile.calculateDistanceTraveled();
-        projectile.calculateTimeOfFlight();
+        if (angle > 180) {
+            Toast.makeText(this, "Uhol nemoze byt vacsi ako 180 stupnov !", Toast.LENGTH_SHORT).show();
+        } else {
+            TrajectoryProjectile projectile = new TrajectoryProjectile(angle, speed);
+            projectile.calculateDistanceTraveled();
+            projectile.calculateTimeOfFlight();
 
-        intent.putExtra("Projectile", projectile);
-        startActivity(intent);
+            intent.putExtra("Projectile", projectile);
+            startActivity(intent);
+        }
     }
 }

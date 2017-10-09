@@ -22,7 +22,7 @@
             android:id="@+id/TW_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginTop="10dp"
             android:layout_alignParentEnd="true"
             android:text="2 s" />
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/TW_time"
-            android:layout_marginStart="5dp"
+            android:layout_marginEnd="10dp"
             android:layout_alignParentEnd="true"
             android:text="1 m" />
 
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/TW_distance"
-            android:layout_marginStart="5dp"
+            android:layout_marginEnd="10dp"
             android:layout_alignParentEnd="true"
             android:text="1 m" />
     </RelativeLayout>

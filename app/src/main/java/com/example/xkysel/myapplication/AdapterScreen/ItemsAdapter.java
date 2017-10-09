@@ -37,9 +37,10 @@ class ItemsAdapter extends ArrayAdapter<ItemOfAdapter> {
 
         //set data
         assert itemOfAdapter != null;
-        time.setText(String.valueOf(itemOfAdapter.get_time()));
-        distance.setText(String.valueOf(itemOfAdapter.get_distance()));
-        height.setText(String.valueOf(itemOfAdapter.get_height()));
+
+        time.setText(String.format("%.2f", itemOfAdapter.get_time()));
+        distance.setText(String.format("%.2f", itemOfAdapter.get_distance()));
+        height.setText(String.format("%.2f", itemOfAdapter.get_height()));
 
         return convertView;
     }
