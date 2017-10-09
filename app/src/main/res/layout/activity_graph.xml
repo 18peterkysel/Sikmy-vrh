@@ -10,10 +10,9 @@
        android:id="@+id/toolbarGraph"
        android:layout_width="match_parent"
        android:layout_height="?attr/actionBarSize"
-       android:background="?attr/colorPrimary"
-       android:elevation="4dp"
+       android:background="#ffa500"
        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+       app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
    <com.jjoe64.graphview.GraphView
        android:id="@+id/lineChart"

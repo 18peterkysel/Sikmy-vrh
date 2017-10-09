@@ -5,23 +5,23 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
-    tools:context="com.example.xkysel.myapplication.AdapterScreen.TableActivity">
+    tools:context="com.example.xkysel.myapplication.AdapterScreen.TableActivity"
+    >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarTable"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
+        android:background="#ffa500"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <RelativeLayout
         android:id="@+id/info_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbarTable"
-        android:layout_margin="10dp">
+        android:background="@android:drawable/dialog_holo_light_frame">
 
         <TextView
             android:id="@+id/TW_total_distance_title"
