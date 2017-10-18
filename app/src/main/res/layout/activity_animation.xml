@@ -2,17 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/anim_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.xkysel.myapplication.Animacia.AnimationActivity">
 
     <ImageView
-        android:id="@+id/animImage"
+        android:id="@+id/anim_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/ball"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:contentDescription="@string/description_anim_image" />
+        />
 
 </RelativeLayout>

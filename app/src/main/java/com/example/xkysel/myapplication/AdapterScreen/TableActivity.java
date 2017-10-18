@@ -44,7 +44,7 @@ public class TableActivity extends AppCompatActivity {
         setInfoBar();
 
         // set adapter
-        ArrayList<ItemOfAdapter> items =returnItems();
+        ArrayList<ItemOfAdapter> items = returnItems();
         ItemsAdapter itemsAdapter = new ItemsAdapter(this, items);
         ListView listView = (ListView) findViewById(R.id.items_listView);
 

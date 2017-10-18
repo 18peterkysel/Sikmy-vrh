@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.xkysel.myapplication.AdapterScreen.TableActivity;
+import com.example.xkysel.myapplication.Animacia.AnimationActivity;
 
 public class MainActivity extends AppCompatActivity {
     private EditText _angle_editText;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onClickStartButton() {
-        Intent intent = new Intent(this, TableActivity.class);
+        Intent intent = new Intent(this, AnimationActivity.class);
         int angle = Integer.valueOf(_angle_editText.getText().toString());
         int speed = Integer.valueOf(_speed_editText.getText().toString());
 
