@@ -16,4 +16,5 @@
     <string name="menu_title_anim">Animacia</string>
     <string name="menu_title_info">Info</string>
     <string name="description_anim_image">Animation image</string>
+    <string name="check_to_online">Check to online !</string>
 </resources>

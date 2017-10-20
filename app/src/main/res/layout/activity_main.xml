@@ -49,4 +49,21 @@
             android:layout_below="@id/ET_speed"
             android:text="@string/button_text" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/TW_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/check_to_online"
+        android:textStyle="bold"
+        android:layout_above="@+id/checkbox"
+        android:layout_centerInParent="true"/>
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true" />
 </RelativeLayout>
