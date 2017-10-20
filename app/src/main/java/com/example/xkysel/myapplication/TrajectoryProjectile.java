@@ -8,6 +8,7 @@ public class TrajectoryProjectile implements Serializable {
     private double _angle;
     private double _speed;
     private double _distanceTraveled;
+    private double _highestHeight;
     private double _timeOfFlight;
     private ArrayList<Double> _listOfX = new ArrayList<>();
     private ArrayList<Double> _listOfY = new ArrayList<>();
@@ -35,26 +36,6 @@ public class TrajectoryProjectile implements Serializable {
         } else {
             calculateXYfromNegativeDistance(timeOfFlight, increaseTime);
         }
-    }
-
-    public double get_distanceTraveled() {
-        return _distanceTraveled;
-    }
-
-    public double get_timeOfFlight() {
-        return _timeOfFlight;
-    }
-
-    private double get_xInTime(double time) {
-        return (_speed * time * Math.cos(Math.toRadians(_angle)));
-    }
-
-    private double get_yInTime(double time) {
-        return (_speed * time * Math.sin(Math.toRadians(_angle))) - ((9.81 * Math.pow(time, 2)) / 2);
-    }
-
-    public double get_highestHeight() {
-        return (Math.pow(_speed, 2) * Math.pow(Math.sin(Math.toRadians(_angle)), 2) / (2 * 9.81));
     }
 
     private void calculateXYtoPostiveDistance(double timeOfFlight, double increaseTime) {
@@ -85,6 +66,26 @@ public class TrajectoryProjectile implements Serializable {
         }
     }
 
+    public double get_distanceTraveled() {
+        return _distanceTraveled;
+    }
+
+    public double get_timeOfFlight() {
+        return _timeOfFlight;
+    }
+
+    private double get_xInTime(double time) {
+        return (_speed * time * Math.cos(Math.toRadians(_angle)));
+    }
+
+    private double get_yInTime(double time) {
+        return (_speed * time * Math.sin(Math.toRadians(_angle))) - ((9.81 * Math.pow(time, 2)) / 2);
+    }
+
+    public double get_highestHeight() {
+        return (Math.pow(_speed, 2) * Math.pow(Math.sin(Math.toRadians(_angle)), 2) / (2 * 9.81));
+    }
+
     public ArrayList<Double> get_Xaxis() {
         return _listOfX;
     }
@@ -95,5 +96,29 @@ public class TrajectoryProjectile implements Serializable {
 
     public ArrayList<Double> get_listOfTimes() {
         return _listOfTimes;
+    }
+
+    public void set_distanceTraveled(double _distanceTraveled) {
+        this._distanceTraveled = _distanceTraveled;
+    }
+
+    public void set_timeOfFlight(double _timeOfFlight) {
+        this._timeOfFlight = _timeOfFlight;
+    }
+
+    public void set_listOfX(ArrayList<Double> _listOfX) {
+        this._listOfX = _listOfX;
+    }
+
+    public void set_listOfY(ArrayList<Double> _listOfY) {
+        this._listOfY = _listOfY;
+    }
+
+    public void set_listOfTimes(ArrayList<Double> _listOfTimes) {
+        this._listOfTimes = _listOfTimes;
+    }
+
+    public void set_highestHeight(double _highestHeight) {
+        this._highestHeight = _highestHeight;
     }
 }
