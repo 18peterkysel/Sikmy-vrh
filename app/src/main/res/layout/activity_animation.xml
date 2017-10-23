@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context="com.example.xkysel.myapplication.Animacia.AnimationActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarAnim"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#ffa500"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <ImageView
         android:id="@+id/anim_image"
         android:layout_width="48dp"

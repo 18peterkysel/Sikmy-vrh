@@ -26,8 +26,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GraphScreen.GraphActivity"
+            android:label="@string/title_activity_graph"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Animacia.AnimationActivity"
+            android:label="@string/title_activity_anim"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 </manifest>

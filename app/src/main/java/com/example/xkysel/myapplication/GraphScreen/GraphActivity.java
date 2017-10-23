@@ -52,13 +52,8 @@ public class GraphActivity extends AppCompatActivity {
         viewport.setMinY(0);
         viewport.setMaxY(highestHeight + 1);
 
-        if (distanceOfTraveled >= 0) {
-            viewport.setMinX(-distanceOfTraveled);
-            viewport.setMaxX(distanceOfTraveled);
-        } else {
-            viewport.setMinX(distanceOfTraveled);
-            viewport.setMaxX(-distanceOfTraveled);
-        }
+        viewport.setMinX(0);
+        viewport.setMaxX(distanceOfTraveled);
     }
 
     @Override
@@ -76,7 +71,7 @@ public class GraphActivity extends AppCompatActivity {
                     double x = axisX.get(i);
                     double y = axisY.get(i);
 
-                    _series.appendData(new DataPoint(x, y), false,  100);
+                    _series.appendData(new DataPoint(x, y), false,  101);
                 }
             }
         }).start();

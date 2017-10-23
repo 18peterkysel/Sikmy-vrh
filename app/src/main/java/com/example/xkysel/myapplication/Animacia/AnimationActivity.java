@@ -1,11 +1,17 @@
 package com.example.xkysel.myapplication.Animacia;
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.example.xkysel.myapplication.AdapterScreen.TableActivity;
+import com.example.xkysel.myapplication.GraphScreen.GraphActivity;
 import com.example.xkysel.myapplication.R;
 import com.example.xkysel.myapplication.TrajectoryProjectile;
 
@@ -15,14 +21,20 @@ public class AnimationActivity extends AppCompatActivity {
     private ImageView _imageView;
     private ArrayList<Double> _axisX;
     private ArrayList<Double> _axisY;
+    private TrajectoryProjectile _projectile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animation);
 
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbarAnim);
+
+        setSupportActionBar(myToolbar);
+        myToolbar.inflateMenu(R.menu.menu);
+
         if (getIntent().hasExtra("Projectile")) {
-            TrajectoryProjectile _projectile = (TrajectoryProjectile) getIntent().getSerializableExtra("Projectile");
+            _projectile = (TrajectoryProjectile) getIntent().getSerializableExtra("Projectile");
             _axisX = _projectile.get_Xaxis();
             _axisY = _projectile.get_Yaxis();
         }
@@ -50,5 +62,42 @@ public class AnimationActivity extends AppCompatActivity {
         });
 
         valueAnimatorFor.start();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.nav_table:
+                startTableActivity();
+                break;
+            case R.id.nav_chart:
+                starGraphActivity();
+                break;
+            case R.id.nav_info:
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    private void startTableActivity() {
+        Intent intent = new Intent(this, TableActivity.class);
+
+        intent.putExtra("Projectile", _projectile);
+        startActivity(intent);
+    }
+
+    private void starGraphActivity() {
+        Intent intent = new Intent(this, GraphActivity.class);
+
+        intent.putExtra("Projectile", _projectile);
+        startActivity(intent);
     }
 }
