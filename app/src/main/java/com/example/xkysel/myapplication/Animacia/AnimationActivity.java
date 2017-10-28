@@ -44,14 +44,13 @@ public class AnimationActivity extends AppCompatActivity {
         _imageView.getLocationOnScreen(location);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
-
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
         final int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
 
         final ValueAnimator valueAnimatorFor = ValueAnimator.ofInt(0, 100);
 
-        valueAnimatorFor.setDuration(5000);
+        valueAnimatorFor.setDuration(2000);
         valueAnimatorFor.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -72,8 +71,6 @@ public class AnimationActivity extends AppCompatActivity {
                 break;
             case R.id.nav_chart:
                 starGraphActivity();
-                break;
-            case R.id.nav_info:
                 break;
             default:
                 return super.onOptionsItemSelected(item);

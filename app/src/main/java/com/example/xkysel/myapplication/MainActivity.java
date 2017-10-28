@@ -1,19 +1,16 @@
 package com.example.xkysel.myapplication;
 
-import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.xkysel.myapplication.AdapterScreen.TableActivity;
@@ -32,9 +29,11 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
+
     private EditText _angle_editText;
     private EditText _speed_editText;
     private Switch _switch;
+    protected ProgressBar _loadingWheel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         _angle_editText = (EditText) findViewById(R.id.ET_angle);
         _speed_editText = (EditText) findViewById(R.id.ET_speed);
         _switch = (Switch) findViewById(R.id.main_switch);
+//        _loadingWheel = (ProgressBar) findViewById(R.id.progressBar);
 
         Button startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -59,8 +59,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onClickStartButton() throws IOException, ExecutionException, InterruptedException {
-        int angle = Integer.valueOf(_angle_editText.getText().toString());
-        int speed = Integer.valueOf(_speed_editText.getText().toString());
+        String angle_value = _angle_editText.getText().toString();
+        String speed_value = _speed_editText.getText().toString();
+
+        if (angle_value.equals("") || speed_value.equals("")) {
+            Toast.makeText(this, "Uhol a rychlost musia byt zadane !", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int angle = Integer.valueOf(angle_value);
+        int speed = Integer.valueOf(speed_value);
         TrajectoryProjectile projectile = new TrajectoryProjectile(angle, speed);
 
         Intent intent = new Intent(this, TableActivity.class);
@@ -75,14 +83,13 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 String _ip = "192.168.137.1";
                 String _port = "8080";
-                String link = "http://" + _ip + ":" + _port + "/";
+                final String link = "http://" + _ip + ":" + _port + "/";
+
                 Download asyncTask_get_XY = download_XYaxis(link, angle, speed);
+                String status = asyncTask_get_XY.get();
 
-                while (!asyncTask_get_XY.get().equals("FINISHED") &&
-                        !asyncTask_get_XY.get().equals("Error"));
-
-                if (asyncTask_get_XY.get().equals("Error")) {
-                    Toast.makeText(getBaseContext(), "Chyba pri pripojeni sa na server !", Toast.LENGTH_SHORT).show();
+                if (status.equals("Error")) {
+                    printErrorDialog();
                     return;
                 }
 
@@ -91,10 +98,17 @@ public class MainActivity extends AppCompatActivity {
                 Download asyncTask_get_TimeOfFlight = download_getTimeOfFlight(link);
                 Download asyncTask_get_HighestHeight = download_getHighestHeight(link);
 
-                while ( !asyncTask_get_ListOfTimes.get().equals("FINISHED") ||
-                        !asyncTask_get_DistanceTraveled.get().equals("FINISHED") ||
-                        !asyncTask_get_TimeOfFlight.get().equals("FINISHED") ||
-                        !asyncTask_get_HighestHeight.get().equals("FINISHED"));
+                status = asyncTask_get_ListOfTimes.get();
+                if (status.equals("Error")) {
+                    printErrorDialog();
+                    return;
+                }
+
+                status = asyncTask_get_HighestHeight.get();
+                if (status.equals("Error")) {
+                    printErrorDialog();
+                    return;
+                }
 
                 projectile.set_listOfX(asyncTask_get_XY.get_xAxis());
                 projectile.set_listOfY(asyncTask_get_XY.get_yAxis());
@@ -106,6 +120,21 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("Projectile", projectile);
             startActivity(intent);
         }
+    }
+
+    private void printErrorDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Chyba pri pripojeni na server !").setTitle("Error");
+        alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     private Download download_XYaxis(String link, int angle, int speed) {
@@ -163,9 +192,13 @@ public class MainActivity extends AppCompatActivity {
         private Double _timeOfFlight;
         private Double _highestHeight;
 
-
         Download(String downloadGoal) {
             this._downloadGoal = downloadGoal;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
 
         @Override
@@ -203,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                         process_highestHeight(jsonString);
                         break;
                     default:
-                        return "Neznamy ciel stahovania !";
+                        return "Error";
                 }
 
             } catch (IOException | JSONException e) {
@@ -211,6 +244,11 @@ public class MainActivity extends AppCompatActivity {
                 return "Error";
             }
             return "FINISHED";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
         }
 
         private boolean process_XY(String jsonString) throws JSONException {

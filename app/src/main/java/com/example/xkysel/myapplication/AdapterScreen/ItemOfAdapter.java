@@ -6,20 +6,11 @@ class ItemOfAdapter {
     private double _distance;
     private double _height;
 
-    public ItemOfAdapter(double time, double distance, double height){
+    ItemOfAdapter(double time, double distance, double height){
         this._time = time;
         this._distance = distance;
         this._height = height;
     }
-
-//    static ArrayList<ItemOfAdapter> getItems() {
-//        ArrayList<ItemOfAdapter> items = new ArrayList<>();
-//        items.add(new ItemOfAdapter(1, 1));
-//        items.add(new ItemOfAdapter(2, 2));
-//        items.add(new ItemOfAdapter(3, 3));
-//
-//        return items;
-//    }
 
     double get_time() {
         return _time;

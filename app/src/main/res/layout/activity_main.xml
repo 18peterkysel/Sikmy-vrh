@@ -65,4 +65,12 @@
             android:layout_below="@id/ET_speed"
             android:text="@string/button_text" />
     </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:visibility="gone"/>
 </RelativeLayout>

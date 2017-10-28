@@ -86,8 +86,6 @@ public class GraphActivity extends AppCompatActivity {
             case R.id.nav_anim:
                 startAnimationActivity();
                 break;
-            case R.id.nav_info:
-                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
