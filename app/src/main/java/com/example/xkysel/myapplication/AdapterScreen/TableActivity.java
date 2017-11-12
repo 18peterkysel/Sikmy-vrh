@@ -86,7 +86,6 @@ public class TableActivity extends AppCompatActivity {
     }
 
     private void setInfoBar() {
-
         String totalDistance = String.format("%.2f", _projectile.get_distanceTraveled());
         String totaTime = String.format("%.2f", _projectile.get_timeOfFlight());
         String totalHeight = String.format("%.2f", _projectile.get_highestHeight());

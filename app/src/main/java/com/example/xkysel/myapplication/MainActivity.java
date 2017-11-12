@@ -30,9 +30,13 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TrajectoryProjectile _projectile;
     private EditText _angle_editText;
     private EditText _speed_editText;
     private Switch _switch;
+    private boolean _responseError = false;
+    private Intent _intent;
+
     protected ProgressBar _loadingWheel;
 
     @Override
@@ -43,19 +47,29 @@ public class MainActivity extends AppCompatActivity {
         _angle_editText = (EditText) findViewById(R.id.ET_angle);
         _speed_editText = (EditText) findViewById(R.id.ET_speed);
         _switch = (Switch) findViewById(R.id.main_switch);
-//        _loadingWheel = (ProgressBar) findViewById(R.id.progressBar);
+        _loadingWheel = (ProgressBar) findViewById(R.id.progressBar);
+
+
 
         Button startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
+                    _responseError = false;
                     onClickStartButton();
                 } catch (IOException | InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    private void loadingStart() {
+        _loadingWheel.setVisibility(View.VISIBLE);
+    }
+    private void loadingFinish() {
+        _loadingWheel.setVisibility(View.INVISIBLE);
     }
 
     private void onClickStartButton() throws IOException, ExecutionException, InterruptedException {
@@ -69,60 +83,44 @@ public class MainActivity extends AppCompatActivity {
 
         int angle = Integer.valueOf(angle_value);
         int speed = Integer.valueOf(speed_value);
-        TrajectoryProjectile projectile = new TrajectoryProjectile(angle, speed);
+        _projectile  = new TrajectoryProjectile(angle, speed);
 
-        Intent intent = new Intent(this, TableActivity.class);
+        _intent = new Intent(this, TableActivity.class);
 
         if (angle > 89) {
             Toast.makeText(this, "Uhol nemoze byt vacsi ako 89 stupnov !", Toast.LENGTH_SHORT).show();
         } else {
+            //start loading
+            loadingStart();
+
             if (!_switch.isChecked()) {
-                projectile.calculateDistanceTraveled();
-                projectile.calculateTimeOfFlight();
-                projectile.calculate_X_Y_axis();
+                _projectile.calculateDistanceTraveled();
+                _projectile.calculateTimeOfFlight();
+                _projectile.calculate_X_Y_axis();
+
+                // finish loading
+                loadingFinish();
+
+                _intent.putExtra("Projectile", _projectile);
+                startActivity(_intent);
             } else {
                 String _ip = "192.168.137.1";
                 String _port = "8080";
                 final String link = "http://" + _ip + ":" + _port + "/";
 
-                Download asyncTask_get_XY = download_XYaxis(link, angle, speed);
-                String status = asyncTask_get_XY.get();
-
-                if (status.equals("Error")) {
-                    printErrorDialog();
-                    return;
-                }
-
-                Download asyncTask_get_ListOfTimes = download_getListOfTimes(link);
-                Download asyncTask_get_DistanceTraveled = download_distanceTraveled(link);
-                Download asyncTask_get_TimeOfFlight = download_getTimeOfFlight(link);
-                Download asyncTask_get_HighestHeight = download_getHighestHeight(link);
-
-                status = asyncTask_get_ListOfTimes.get();
-                if (status.equals("Error")) {
-                    printErrorDialog();
-                    return;
-                }
-
-                status = asyncTask_get_HighestHeight.get();
-                if (status.equals("Error")) {
-                    printErrorDialog();
-                    return;
-                }
-
-                projectile.set_listOfX(asyncTask_get_XY.get_xAxis());
-                projectile.set_listOfY(asyncTask_get_XY.get_yAxis());
-                projectile.set_listOfTimes(asyncTask_get_ListOfTimes.get_listOfTimes());
-                projectile.set_distanceTraveled(asyncTask_get_DistanceTraveled.get_distanceTraveled());
-                projectile.set_timeOfFlight(asyncTask_get_TimeOfFlight.get_timeOfFlight());
-                projectile.set_highestHeight(asyncTask_get_HighestHeight.get_highestHeight());
+                download_XYaxis(link, angle, speed);
+                download_getListOfTimes(link);
+                download_distanceTraveled(link);
+                download_getTimeOfFlight(link);
+                download_getHighestHeight(link);
             }
-            intent.putExtra("Projectile", projectile);
-            startActivity(intent);
         }
     }
 
     private void printErrorDialog() {
+        // finish loading
+        loadingFinish();
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Chyba pri pripojeni na server !").setTitle("Error");
         alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -137,49 +135,165 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private Download download_XYaxis(String link, int angle, int speed) {
+    private void download_XYaxis(String link, int angle, int speed) {
         String getRequest = "getXY/angle=" + String.valueOf(angle) + "&speed="+ String.valueOf(speed);
         link = link + getRequest;
-        Download download = new Download("getXY");
-        download.execute(link);
+        final Download download = new Download("getXY");
+        download.setListener(new ResponseListener() {
+            @Override
+            public void onResponse(String data) {
+                if (_responseError) {
+                    return;
+                } else if (data.equals("Error")) {
+                    _responseError = true;
+                    printErrorDialog();
+                } else if (data.equals("FINISHED")) {
+                    _responseError = false;
+                    _projectile.set_listOfX(download.get_xAxis());
+                    _projectile.set_listOfY(download.get_yAxis());
+                }
 
-        return download;
+                if (!_responseError && !_projectile.get_Xaxis().isEmpty() &&
+                        !_projectile.get_Yaxis().isEmpty() && !_projectile.get_listOfTimes().isEmpty() &&
+                        _projectile.get_highestHeight() != -1 && _projectile.get_timeOfFlight() != -1 &&
+                        _projectile.get_distanceTraveled() != -1) {
+                    // finish loading
+                    loadingFinish();
+
+                    _intent.putExtra("Projectile", _projectile);
+                    startActivity(_intent);
+                }
+            }
+        });
+        download.execute(link);
     }
 
-    private Download download_getListOfTimes(String link) {
+    private void download_getListOfTimes(String link) {
         String getRequest = "getListOfTimes";
         link = link + getRequest;
-        Download download = new Download("getListOfTimes");
-        download.execute(link);
+        final Download download = new Download("getListOfTimes");
+        download.setListener(new ResponseListener() {
+            @Override
+            public void onResponse(String data) {
+                if (_responseError) {
+                    return;
+                } else if (data.equals("Error")) {
+                    _responseError = true;
+                    printErrorDialog();
+                } else if (data.equals("FINISHED")) {
+                    _responseError = false;
+                    _projectile.set_listOfTimes(download.get_listOfTimes());
+                }
 
-        return download;
+                if (!_responseError && !_projectile.get_Xaxis().isEmpty() &&
+                        !_projectile.get_Yaxis().isEmpty() && !_projectile.get_listOfTimes().isEmpty() &&
+                        _projectile.get_highestHeight() != -1 && _projectile.get_timeOfFlight() != -1 &&
+                        _projectile.get_distanceTraveled() != -1) {
+                    // finish loading
+                    loadingFinish();
+
+                    _intent.putExtra("Projectile", _projectile);
+                    startActivity(_intent);
+                }
+            }
+        });
+        download.execute(link);
     }
 
-    private Download download_distanceTraveled(String link) {
+    private void download_distanceTraveled(String link) {
         String getRequest = "getDistanceTraveled";
         link = link + getRequest;
-        Download download = new Download("getDistanceTraveled");
-        download.execute(link);
+        final Download download = new Download("getDistanceTraveled");
+        download.setListener(new ResponseListener() {
+            @Override
+            public void onResponse(String data) {
+                if (_responseError) {
+                    return;
+                } else if (data.equals("Error")) {
+                    _responseError = true;
+                    printErrorDialog();
+                } else if (data.equals("FINISHED")) {
+                    _responseError = false;
+                    _projectile.set_distanceTraveled(download.get_distanceTraveled());
+                }
 
-        return download;
+                if (!_responseError && !_projectile.get_Xaxis().isEmpty() &&
+                        !_projectile.get_Yaxis().isEmpty() && !_projectile.get_listOfTimes().isEmpty() &&
+                        _projectile.get_highestHeight() != -1 && _projectile.get_timeOfFlight() != -1 &&
+                        _projectile.get_distanceTraveled() != -1) {
+                    // finish loading
+                    loadingFinish();
+
+                    _intent.putExtra("Projectile", _projectile);
+                    startActivity(_intent);
+                }
+            }
+        });
+        download.execute(link);
     }
 
-    private Download download_getTimeOfFlight(String link) {
+    private void download_getTimeOfFlight(String link) {
         String getRequest = "getTimeOfFlight";
         link = link + getRequest;
-        Download download = new Download("getTimeOfFlight");
-        download.execute(link);
+        final Download download = new Download("getTimeOfFlight");
+        download.setListener(new ResponseListener() {
+            @Override
+            public void onResponse(String data) {
+                if (_responseError) {
+                    return;
+                } else if (data.equals("Error")) {
+                    _responseError = true;
+                    printErrorDialog();
+                } else if (data.equals("FINISHED")) {
+                    _responseError = false;
+                    _projectile.set_timeOfFlight(download.get_timeOfFlight());
+                }
 
-        return download;
+                if (!_responseError && !_projectile.get_Xaxis().isEmpty() &&
+                        !_projectile.get_Yaxis().isEmpty() && !_projectile.get_listOfTimes().isEmpty() &&
+                        _projectile.get_highestHeight() != -1 && _projectile.get_timeOfFlight() != -1 &&
+                        _projectile.get_distanceTraveled() != -1) {
+                    // finish loading
+                    loadingFinish();
+
+                    _intent.putExtra("Projectile", _projectile);
+                    startActivity(_intent);
+                }
+            }
+        });
+        download.execute(link);
     }
 
-    private Download download_getHighestHeight(String link) {
+    private void download_getHighestHeight(String link) {
         String getRequest = "getHighestHeight";
         link = link + getRequest;
-        Download download = new Download("getHighestHeight");
-        download.execute(link);
+        final Download download = new Download("getHighestHeight");
+        download.setListener(new ResponseListener() {
+            @Override
+            public void onResponse(String data) {
+                if (_responseError) {
+                    return;
+                } else if (data.equals("Error")) {
+                    _responseError = true;
+                    printErrorDialog();
+                } else if (data.equals("FINISHED")) {
+                    _responseError = false;
+                    _projectile.set_highestHeight(download.get_highestHeight());
+                }
 
-        return download;
+                if (!_responseError && !_projectile.get_Xaxis().isEmpty() &&
+                        !_projectile.get_Yaxis().isEmpty() && !_projectile.get_listOfTimes().isEmpty() &&
+                        _projectile.get_highestHeight() != -1 && _projectile.get_timeOfFlight() != -1 &&
+                        _projectile.get_distanceTraveled() != -1) {
+                    // finish loading
+                    loadingFinish();
+
+                    _intent.putExtra("Projectile", _projectile);
+                    startActivity(_intent);
+                }
+            }
+        });
+        download.execute(link);
     }
 
     private class Download extends AsyncTask<String, Void, String> {
@@ -192,8 +306,14 @@ public class MainActivity extends AppCompatActivity {
         private Double _timeOfFlight;
         private Double _highestHeight;
 
+        private ResponseListener _listener;
+
         Download(String downloadGoal) {
             this._downloadGoal = downloadGoal;
+        }
+
+        public void setListener(ResponseListener listener) {
+            _listener = listener;
         }
 
         @Override
@@ -249,6 +369,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            if(_listener != null) {
+                _listener.onResponse(s);
+            }
         }
 
         private boolean process_XY(String jsonString) throws JSONException {

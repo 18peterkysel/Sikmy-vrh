@@ -5,11 +5,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class TrajectoryProjectile implements Serializable {
-    private double _angle;
-    private double _speed;
-    private double _distanceTraveled;
-    private double _highestHeight = 0;
-    private double _timeOfFlight;
+    private double _angle = -1;
+    private double _speed = -1;
+    private double _distanceTraveled = -1;
+    private double _highestHeight = -1;
+    private double _timeOfFlight = -1;
 
     private ArrayList<Double> _listOfX = new ArrayList<>();
     private ArrayList<Double> _listOfY = new ArrayList<>();
@@ -84,7 +84,7 @@ public class TrajectoryProjectile implements Serializable {
     }
 
     public double get_highestHeight() {
-        if (_highestHeight != 0) {
+        if (_highestHeight != -1) {
             return _highestHeight;
         }
         return (Math.pow(_speed, 2) * Math.pow(Math.sin(Math.toRadians(_angle)), 2) / (2 * 9.81));
